@@ -1,0 +1,2 @@
+ALTER TABLE categories ADD COLUMN IF NOT EXISTS custom_fields JSONB DEFAULT '[]';
+ALTER TABLE places ADD COLUMN IF NOT EXISTS custom_data JSONB DEFAULT '{}';
