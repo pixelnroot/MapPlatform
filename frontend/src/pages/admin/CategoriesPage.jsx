@@ -12,7 +12,6 @@ export default function CategoriesPage() {
   // Add form state
   const [newName, setNewName] = useState('')
   const [newIcon, setNewIcon] = useState('')
-  const [newColor, setNewColor] = useState('#94A3B8')
 
   // Edit state
   const [editId, setEditId] = useState(null)
@@ -42,10 +41,9 @@ export default function CategoriesPage() {
     if (!newName.trim()) return
     setError('')
     try {
-      await createCategory({ name: newName.trim(), icon: newIcon || null, color: newColor })
+      await createCategory({ name: newName.trim(), icon: newIcon || null })
       setNewName('')
       setNewIcon('')
-      setNewColor('#94A3B8')
       fetchCategories()
     } catch (err) {
       setError(err.response?.data?.error || 'Failed to create category')
@@ -122,8 +120,6 @@ export default function CategoriesPage() {
           onChange={e => setNewName(e.target.value)} required />
         <input type="text" placeholder="Icon (emoji)" value={newIcon}
           onChange={e => setNewIcon(e.target.value)} style={{ width: '80px' }} />
-        <input type="color" value={newColor} onChange={e => setNewColor(e.target.value)}
-          style={{ width: '50px', height: '36px', padding: '2px', cursor: 'pointer' }} />
         <button type="submit" className="btn btn-primary">Add</button>
       </form>
 

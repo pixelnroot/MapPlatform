@@ -24,11 +24,24 @@ router.post('/', adminAuth, async (req, res, next) => {
     if (color && !/^#[0-9A-Fa-f]{6}$/.test(color)) return err(res, 400, 'Color must be a valid hex color (e.g. #FF0000)')
 
     const id = uuidv4()
+    
+    let finalColor = color;
+    if (!finalColor) {
+      let isUnique = false;
+      while (!isUnique) {
+        finalColor = '#' + Math.floor(Math.random() * 16777215).toString(16).padStart(6, '0').toUpperCase();
+        const checkRes = await db.query('SELECT 1 FROM categories WHERE color = $1', [finalColor]);
+        if (checkRes.rows.length === 0) {
+          isUnique = true;
+        }
+      }
+    }
+
     const result = await db.query(
       `INSERT INTO categories (id, name, icon, color)
        VALUES ($1, $2, $3, $4)
        RETURNING id, name, icon, color, custom_fields`,
-      [id, name.trim(), icon || null, color || '#94A3B8']
+      [id, name.trim(), icon || null, finalColor]
     )
     ok(res, result.rows[0])
   } catch (e) {
