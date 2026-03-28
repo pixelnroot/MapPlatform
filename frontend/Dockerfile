@@ -6,9 +6,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci --legacy-peer-deps
 
 ARG VITE_API_URL=""
-ARG VITE_ADMIN_KEY=""
 ENV VITE_API_URL=$VITE_API_URL
-ENV VITE_ADMIN_KEY=$VITE_ADMIN_KEY
 
 COPY . .
 RUN npm run build

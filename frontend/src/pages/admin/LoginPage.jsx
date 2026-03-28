@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { loginUser } from '../../api'
+import { loginUser, verifyAdminKey } from '../../api'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
@@ -15,10 +15,12 @@ export default function LoginPage() {
     setError('')
 
     if (mode === 'legacy') {
-      if (legacyKey === import.meta.env.VITE_ADMIN_KEY) {
+      try {
+        await verifyAdminKey(legacyKey)
+        // Key verified by backend — store it so adminApi can use it
         localStorage.setItem('adminKey', legacyKey)
         navigate('/admin')
-      } else {
+      } catch {
         setError('Invalid admin key')
       }
       return

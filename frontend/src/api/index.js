@@ -9,12 +9,14 @@ const adminApi = axios.create({
 })
 
 // Add JWT token or admin key to admin requests
+// Key is NEVER baked into the frontend build — always read from localStorage at runtime
 adminApi.interceptors.request.use(config => {
   const token = localStorage.getItem('token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   } else {
-    config.headers['x-admin-key'] = import.meta.env.VITE_ADMIN_KEY
+    const storedKey = localStorage.getItem('adminKey')
+    if (storedKey) config.headers['x-admin-key'] = storedKey
   }
   return config
 })
@@ -41,6 +43,9 @@ export const searchPlaces = (q, region_id) =>
 // Auth endpoints
 export const loginUser = (email, password) =>
   api.post('/api/auth/login', { email, password })
+
+export const verifyAdminKey = (key) =>
+  api.post('/api/auth/verify-key', { key })
 
 export const getMe = () =>
   adminApi.get('/api/auth/me')

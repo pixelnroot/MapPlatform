@@ -36,7 +36,6 @@ services:
       context: ./frontend
       args:
         VITE_API_URL: ""
-        VITE_ADMIN_KEY: "admin123"
     network_mode: host
     environment:
       - NGINX_PORT=8080

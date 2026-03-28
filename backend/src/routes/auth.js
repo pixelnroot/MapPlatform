@@ -44,4 +44,14 @@ router.get('/me', auth, async (req, res) => {
   ok(res, req.user)
 })
 
+// POST /api/auth/verify-key — validate admin key without baking it into the frontend
+// Returns success so the frontend can store and reuse the key from localStorage
+router.post('/verify-key', (req, res) => {
+  const key = req.body.key || req.headers['x-admin-key']
+  if (!key) return err(res, 'Key is required')
+  if (!process.env.ADMIN_KEY) return err(res, 'Server misconfiguration', 500)
+  if (key !== process.env.ADMIN_KEY) return err(res, 'Invalid admin key', 401)
+  ok(res, { valid: true })
+})
+
 module.exports = router
